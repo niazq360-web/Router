@@ -1,0 +1,6 @@
+{
+  "name": "EchoLife Manager",
+  "description": "Local management and capability detection for Huawei EchoLife HS8145C5 GPON ONT routers.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
