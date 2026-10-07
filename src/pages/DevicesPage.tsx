@@ -1,14 +1,13 @@
 import React, { useState, useEffect } from 'react';
-import { Smartphone, Laptop, Tv, Shield, Ban, CheckCircle, RefreshCw, Search, ExternalLink, AlertTriangle, Radio, Plus, UserPlus, BellRing } from 'lucide-react';
+import { Smartphone, Laptop, Tv, Ban, CheckCircle, RefreshCw, Search, ExternalLink, AlertTriangle, Radio, UserPlus, BellRing, Clock, Wifi, Power } from 'lucide-react';
 import { routerService } from '../services/routerService';
 import { ConnectedDevice } from '../types';
 
 export const DevicesPage: React.FC = () => {
   const [devices, setDevices] = useState<ConnectedDevice[]>(() => routerService.getConnectedDevices());
   const [search, setSearch] = useState('');
-  const [viewMode, setViewMode] = useState<'SPLIT' | 'ONLINE_ONLY' | 'OFFLINE_ONLY' | 'BLOCKED_ONLY'>('SPLIT');
+  const [viewMode, setViewMode] = useState<'SPLIT' | 'ONLINE_ONLY' | 'OFFLINE_ONLY' | 'NEW_ONLY' | 'BLOCKED_ONLY'>('SPLIT');
   const [isRefreshing, setIsRefreshing] = useState(false);
-  const [autoDetectEnabled, setAutoDetectEnabled] = useState(true);
   const [newDeviceAlert, setNewDeviceAlert] = useState<string | null>(null);
   
   // Add new device modal state
@@ -28,24 +27,25 @@ export const DevicesPage: React.FC = () => {
     setDevices(routerService.getConnectedDevices());
   }, []);
 
-  // Periodic new device detection simulation
-  useEffect(() => {
-    if (!autoDetectEnabled) return;
-    const interval = setInterval(() => {
-      // Auto-refresh from storage
-      setDevices(routerService.getConnectedDevices());
-    }, 10000);
-    return () => clearInterval(interval);
-  }, [autoDetectEnabled]);
-
   const handleRefresh = () => {
     setIsRefreshing(true);
     setTimeout(() => {
-      const refreshed = routerService.getConnectedDevices();
-      setDevices(refreshed);
+      const res = routerService.refreshDevicesStatus();
+      setDevices(res.devices);
       setIsRefreshing(false);
-      setMsg("Huawei HS8145C5 station table synchronized (63 total devices).");
-    }, 500);
+      setMsg(`Station list refreshed: ${res.onlineCount} Online, ${res.offlineCount} Offline (Total 63).`);
+    }, 600);
+  };
+
+  const handleToggleOnline = (dev: ConnectedDevice) => {
+    const updated = routerService.toggleDeviceOnlineStatus(dev.macAddress);
+    setDevices(updated);
+    const target = updated.find(d => d.macAddress === dev.macAddress);
+    if (target?.isOnline) {
+      setMsg(`🟢 ${dev.deviceName} ab ONLINE ho gaya hai (Time: ${target.onlineSince}).`);
+    } else {
+      setMsg(`⚪ ${dev.deviceName} ab OFFLINE ho gaya hai (Time: ${target?.offlineSince}).`);
+    }
   };
 
   const handleConfirmBlock = async () => {
@@ -72,7 +72,7 @@ export const DevicesPage: React.FC = () => {
     if (!newDevMac.trim()) return;
     const cleanMac = newDevMac.trim().toUpperCase();
     const cleanIp = newDevIp.trim() || `192.168.100.${Math.floor(Math.random() * 80) + 160}`;
-    const cleanName = newDevName.trim() || `New-Device-${cleanMac.slice(-5)}`;
+    const cleanName = newDevName.trim() || `New-Mobile-${cleanMac.slice(-5)}`;
 
     const newDev: ConnectedDevice = {
       deviceName: cleanName,
@@ -80,7 +80,8 @@ export const DevicesPage: React.FC = () => {
       ipAddress: cleanIp,
       portId: "SSID1",
       isOnline: true,
-      connectionDuration: "Just connected",
+      isNewConnection: true,
+      connectionDuration: "0 hour 1 minute",
       wifiBand: "2.4GHz",
       isCurrentAdminDevice: false,
       isBlocked: false
@@ -92,13 +93,13 @@ export const DevicesPage: React.FC = () => {
     setNewDevName('');
     setNewDevMac('');
     setNewDevIp('');
-    setNewDeviceAlert(`🔔 Naya device connect ho gaya: ${cleanName} (${cleanMac}) - List mein shamil ho gaya!`);
+    setNewDeviceAlert(`🔔 Naya device connect ho gaya: ${cleanName} (${cleanMac}) - "New Connections" mein show ho raha hai!`);
   };
 
   const getDeviceIcon = (dev: ConnectedDevice) => {
     const name = dev.deviceName.toLowerCase();
     if (name.includes('shop') || name.includes('tv')) return <Tv size={20} color="#a78bfa" />;
-    if (name.includes('laptop') || name.includes('pc') || name.includes('ideapad')) return <Laptop size={20} color="#34d399" />;
+    if (name.includes('laptop') || name.includes('pc') || name.includes('sas')) return <Laptop size={20} color="#34d399" />;
     return <Smartphone size={20} color={dev.isOnline ? '#38bdf8' : '#94a3b8'} />;
   };
 
@@ -113,6 +114,7 @@ export const DevicesPage: React.FC = () => {
 
   const onlineDevices = filteredDevices.filter(d => d.isOnline);
   const offlineDevices = filteredDevices.filter(d => !d.isOnline);
+  const newConnections = filteredDevices.filter(d => d.isNewConnection);
   const blockedDevices = filteredDevices.filter(d => d.isBlocked);
 
   const renderDeviceCard = (device: ConnectedDevice) => {
@@ -133,8 +135,8 @@ export const DevicesPage: React.FC = () => {
         }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
           <div style={{ 
-            width: 42, 
-            height: 42, 
+            width: 44, 
+            height: 44, 
             borderRadius: '50%', 
             background: isBlocked ? '#451a1a' : (device.isOnline ? '#0369a1' : '#0f172a'), 
             display: 'flex', 
@@ -149,6 +151,13 @@ export const DevicesPage: React.FC = () => {
               <span style={{ fontSize: 14, fontWeight: 700, color: isBlocked ? '#fca5a5' : '#fff' }}>
                 {device.deviceName}
               </span>
+              
+              {device.isNewConnection && (
+                <span style={{ background: '#0284c7', color: '#fff', fontSize: 10, padding: '2px 8px', borderRadius: 9999, fontWeight: 700, animation: 'pulse 2s infinite' }}>
+                  🆕 NEW CONNECTION
+                </span>
+              )}
+
               {device.isOnline ? (
                 <span style={{ background: '#064e3b', color: '#34d399', fontSize: 10, padding: '2px 8px', borderRadius: 9999, fontWeight: 700 }}>
                   ● ONLINE ({device.connectionDuration || 'Active'})
@@ -158,28 +167,62 @@ export const DevicesPage: React.FC = () => {
                   OFFLINE
                 </span>
               )}
+
               {isBlocked && (
                 <span style={{ background: '#7f1d1d', color: '#fecaca', fontSize: 10, padding: '2px 8px', borderRadius: 9999, fontWeight: 700, border: '1px solid #ef4444' }}>
                   🚫 BLOCKED
                 </span>
               )}
+
               {device.isCurrentAdminDevice && (
                 <span style={{ background: '#0284c7', color: '#fff', fontSize: 10, padding: '2px 6px', borderRadius: 4, fontWeight: 700 }}>
                   ADMIN PHONE
                 </span>
               )}
             </div>
+
             <div style={{ fontSize: 12, color: '#94a3b8', fontFamily: 'monospace', marginTop: 3 }}>
               MAC: <strong style={{ color: '#f1f5f9' }}>{device.macAddress}</strong> • IP: {device.ipAddress}
             </div>
-            <div style={{ fontSize: 11, color: '#64748b', marginTop: 1 }}>
-              Port: {device.portId || 'SSID1'} • Wi-Fi Band: {device.wifiBand || '2.4GHz'}
+
+            {/* Time Indicator - Exact duration/time online or offline */}
+            <div style={{ display: 'flex', alignItems: 'center', gap: 6, fontSize: 11, marginTop: 4 }}>
+              <Clock size={12} color={device.isOnline ? '#34d399' : '#94a3b8'} />
+              {device.isOnline ? (
+                <span style={{ color: '#6ee7b7' }}>
+                  Online Time: <strong>{device.connectionDuration}</strong> {device.onlineSince ? `(Connected at ${device.onlineSince})` : ''}
+                </span>
+              ) : (
+                <span style={{ color: '#94a3b8' }}>
+                  Status: <strong>{device.offlineSince || 'Offline (previously connected)'}</strong> • Last seen: {device.lastSeenTime || 'Today'}
+                </span>
+              )}
             </div>
           </div>
         </div>
 
-        {/* Action Button */}
+        {/* Action Buttons */}
         <div style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
+          {/* Quick Toggle State (Simulate Disconnect/Reconnect) */}
+          <button
+            onClick={() => handleToggleOnline(device)}
+            title={device.isOnline ? "Simulate Disconnection (Mark Offline)" : "Simulate Connection (Mark Online)"}
+            style={{
+              padding: '6px 10px',
+              background: '#0f172a',
+              border: '1px solid #334155',
+              borderRadius: 8,
+              color: device.isOnline ? '#34d399' : '#64748b',
+              cursor: 'pointer',
+              display: 'flex',
+              alignItems: 'center',
+              gap: 4,
+              fontSize: 11
+            }}>
+            <Power size={13} color={device.isOnline ? '#34d399' : '#64748b'} />
+            {device.isOnline ? 'Go Offline' : 'Go Online'}
+          </button>
+
           {isBlocked ? (
             <button 
               onClick={() => handleUnblock(device)}
@@ -224,7 +267,7 @@ export const DevicesPage: React.FC = () => {
 
   return (
     <div style={{ maxWidth: 960, margin: '0 auto', display: 'flex', flexDirection: 'column', gap: 16 }}>
-      {/* Top Banner with 63 Devices Count & Live Detection Indicator */}
+      {/* Top Banner with 63 Devices Count & Refresh Indicator */}
       <div style={{ background: 'linear-gradient(135deg, #0f172a 0%, #1e293b 100%)', border: '1px solid #0284c7', borderRadius: 16, padding: '16px 20px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: 12 }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: 14 }}>
           <div style={{ width: 46, height: 46, borderRadius: 12, background: 'rgba(2, 132, 199, 0.2)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
@@ -232,16 +275,19 @@ export const DevicesPage: React.FC = () => {
           </div>
           <div>
             <div style={{ display: 'flex', alignItems: 'center', gap: 8, flexWrap: 'wrap' }}>
-              <span style={{ fontSize: 17, fontWeight: 700 }}>Huawei HS8145C5 All Devices</span>
+              <span style={{ fontSize: 17, fontWeight: 700 }}>Huawei HS8145C5 (Wi-Fi 63 Devices)</span>
               <span style={{ background: '#0284c7', color: '#fff', fontSize: 11, padding: '2px 8px', borderRadius: 9999, fontWeight: 700 }}>
-                {devices.length} Devices Total
+                {devices.length} Total
               </span>
               <span style={{ background: '#064e3b', color: '#34d399', fontSize: 11, padding: '2px 8px', borderRadius: 9999, fontWeight: 700 }}>
                 {onlineDevices.length} Online Now
               </span>
+              <span style={{ background: '#334155', color: '#cbd5e1', fontSize: 11, padding: '2px 8px', borderRadius: 9999, fontWeight: 600 }}>
+                {offlineDevices.length} Offline
+              </span>
             </div>
             <p style={{ margin: '4px 0 0', fontSize: 13, color: '#94a3b8' }}>
-              Router Website History (63 Devices) • Online aur Offline alag alag categorize hain
+              Router website ke 63 devices ka live status • Online aur Offline alag alag show ho rahe hain
             </p>
           </div>
         </div>
@@ -256,7 +302,7 @@ export const DevicesPage: React.FC = () => {
             onClick={handleRefresh}
             disabled={isRefreshing}
             style={{ padding: '8px 14px', background: '#0284c7', border: 'none', color: '#fff', borderRadius: 8, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 6, fontSize: 13, fontWeight: 600 }}>
-            <RefreshCw size={15} className={isRefreshing ? 'spin' : ''} /> Refresh Router
+            <RefreshCw size={15} className={isRefreshing ? 'spin' : ''} /> REFRESH DEVICES
           </button>
         </div>
       </div>
@@ -307,7 +353,7 @@ export const DevicesPage: React.FC = () => {
               fontWeight: 600,
               cursor: 'pointer'
             }}>
-            🟢 Sirf Online ({onlineDevices.length})
+            🟢 Online ({onlineDevices.length})
           </button>
           <button
             onClick={() => setViewMode('OFFLINE_ONLY')}
@@ -321,8 +367,24 @@ export const DevicesPage: React.FC = () => {
               fontWeight: 600,
               cursor: 'pointer'
             }}>
-            ⚪ Sirf Offline ({offlineDevices.length})
+            ⚪ Offline ({offlineDevices.length})
           </button>
+          {newConnections.length > 0 && (
+            <button
+              onClick={() => setViewMode('NEW_ONLY')}
+              style={{
+                padding: '6px 12px',
+                borderRadius: 8,
+                border: viewMode === 'NEW_ONLY' ? '1px solid #38bdf8' : '1px solid #0369a1',
+                background: viewMode === 'NEW_ONLY' ? '#0284c7' : '#0c4a6e',
+                color: '#fff',
+                fontSize: 12,
+                fontWeight: 700,
+                cursor: 'pointer'
+              }}>
+              🆕 New Connections ({newConnections.length})
+            </button>
+          )}
           <button
             onClick={() => setViewMode('BLOCKED_ONLY')}
             style={{
@@ -354,19 +416,35 @@ export const DevicesPage: React.FC = () => {
       {/* Main Devices Display */}
       {viewMode === 'SPLIT' && (
         <div style={{ display: 'flex', flexDirection: 'column', gap: 24 }}>
-          {/* Section 1: Online Devices */}
+          {/* Section 1: New Connections (If any) */}
+          {newConnections.length > 0 && (
+            <div style={{ background: '#082f49', border: '1px solid #0284c7', borderRadius: 16, padding: 16 }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 12 }}>
+                <span style={{ width: 10, height: 10, borderRadius: '50%', background: '#38bdf8' }} />
+                <h3 style={{ margin: 0, fontSize: 16, fontWeight: 700, color: '#38bdf8' }}>
+                  🆕 RECENTLY CONNECTED DEVICES ({newConnections.length})
+                </h3>
+                <span style={{ fontSize: 12, color: '#bae6fd' }}>• Naye devices jo abhi connect huye hain</span>
+              </div>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
+                {newConnections.map(renderDeviceCard)}
+              </div>
+            </div>
+          )}
+
+          {/* Section 2: Online Devices */}
           <div>
             <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 12 }}>
               <span style={{ width: 10, height: 10, borderRadius: '50%', background: '#10b981' }} />
               <h3 style={{ margin: 0, fontSize: 16, fontWeight: 700, color: '#34d399' }}>
                 🟢 ONLINE MOBILES & DEVICES ({onlineDevices.length})
               </h3>
-              <span style={{ fontSize: 12, color: '#94a3b8' }}>• Abhi router se connect hain</span>
+              <span style={{ fontSize: 12, color: '#94a3b8' }}>• Is waqt live internet chala rahe hain (Time duration show ho raha hai)</span>
             </div>
 
             {onlineDevices.length === 0 ? (
               <div style={{ background: '#1e293b', border: '1px solid #334155', borderRadius: 12, padding: 18, textAlign: 'center', color: '#94a3b8', fontSize: 13 }}>
-                Koi device search se match nahi hui.
+                Koi online device search se match nahi hui.
               </div>
             ) : (
               <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
@@ -375,19 +453,19 @@ export const DevicesPage: React.FC = () => {
             )}
           </div>
 
-          {/* Section 2: Offline Devices */}
+          {/* Section 3: Offline Devices */}
           <div>
             <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 12 }}>
               <span style={{ width: 10, height: 10, borderRadius: '50%', background: '#64748b' }} />
               <h3 style={{ margin: 0, fontSize: 16, fontWeight: 700, color: '#cbd5e1' }}>
                 ⚪ OFFLINE / PREVIOUSLY CONNECTED DEVICES ({offlineDevices.length})
               </h3>
-              <span style={{ fontSize: 12, color: '#94a3b8' }}>• Router website history (Pehle connect ho chuke hain)</span>
+              <span style={{ fontSize: 12, color: '#94a3b8' }}>• Router website history (Pehle connect ho chuke hain, disconnect time show ho raha hai)</span>
             </div>
 
             {offlineDevices.length === 0 ? (
               <div style={{ background: '#1e293b', border: '1px solid #334155', borderRadius: 12, padding: 18, textAlign: 'center', color: '#94a3b8', fontSize: 13 }}>
-                Koi device search se match nahi hui.
+                Koi offline device search se match nahi hui.
               </div>
             ) : (
               <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
@@ -416,6 +494,15 @@ export const DevicesPage: React.FC = () => {
         </div>
       )}
 
+      {viewMode === 'NEW_ONLY' && (
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
+          <div style={{ fontSize: 14, fontWeight: 700, color: '#38bdf8', marginBottom: 4 }}>
+            🆕 Naye Connect Hone Wale Devices ({newConnections.length})
+          </div>
+          {newConnections.map(renderDeviceCard)}
+        </div>
+      )}
+
       {viewMode === 'BLOCKED_ONLY' && (
         <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
           <div style={{ fontSize: 14, fontWeight: 600, color: '#ef4444', marginBottom: 4 }}>
@@ -440,7 +527,7 @@ export const DevicesPage: React.FC = () => {
               <h3 style={{ margin: 0, fontSize: 18, fontWeight: 700 }}>Naya Device Add / Connect Karein</h3>
             </div>
             <p style={{ fontSize: 13, color: '#cbd5e1', margin: '0 0 16px' }}>
-              Koi bhi naya mobile ya device jo router se connect ho, uski detail yahan enter karein:
+              Koi bhi naya mobile ya device jo router se connect ho, uski detail yahan enter karein (Yeh foran Online aur "New Connection" mein show hoga):
             </p>
 
             <div style={{ display: 'flex', flexDirection: 'column', gap: 12, marginBottom: 18 }}>

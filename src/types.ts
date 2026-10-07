@@ -30,13 +30,18 @@ export interface ConnectedDevice {
   macAddress: string;
   ipAddress: string;
   deviceName: string;
-  portId?: string; // e.g. SSID1
+  portId?: string; // SSID1
   isOnline: boolean;
-  connectionDuration?: string; // e.g. "0 hour 19 minutes" or "--"
+  connectionDuration?: string; // e.g. "1 hour 16 minutes"
+  onlineSince?: string; // e.g. "6:56 PM"
+  offlineSince?: string; // e.g. "8:10 PM"
+  lastSeenTime?: string; // e.g. "8:12 PM"
   wifiBand?: string;
   rssi?: number;
   isCurrentAdminDevice?: boolean;
   isBlocked?: boolean;
+  isNewConnection?: boolean; // Highlight newly joined devices
+  connectedAt?: number;
 }
 
 export interface MacFilterRule {
