@@ -13,7 +13,6 @@ export interface RouterCapabilityReport {
   authStatus: AuthStatus;
   macFilteringCapability: CapabilityStatus;
   connectedDeviceCapability: CapabilityStatus;
-  // 9-point checklist
   canAuthenticate: CapabilityStatus;
   canReadConnectedDevices: CapabilityStatus;
   canReadMacFilter: CapabilityStatus;
@@ -31,10 +30,13 @@ export interface ConnectedDevice {
   macAddress: string;
   ipAddress: string;
   deviceName: string;
+  portId?: string; // e.g. SSID1
   isOnline: boolean;
-  wifiBand: string;
+  connectionDuration?: string; // e.g. "0 hour 19 minutes" or "--"
+  wifiBand?: string;
   rssi?: number;
   isCurrentAdminDevice?: boolean;
+  isBlocked?: boolean;
 }
 
 export interface MacFilterRule {
