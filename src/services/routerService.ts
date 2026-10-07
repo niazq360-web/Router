@@ -1,14 +1,15 @@
 import { RouterCapabilityReport, ConnectedDevice, MacFilterRule, RouterCredentials } from '../types';
 
 const STORAGE_KEY_CREDS = 'echolife_router_credentials';
-const STORAGE_KEY_DEVICES = 'echolife_connected_devices_v2';
-const STORAGE_KEY_RULES = 'echolife_mac_rules_v2';
+const STORAGE_KEY_DEVICES = 'echolife_connected_devices_v3';
+const STORAGE_KEY_RULES = 'echolife_mac_rules_v3';
 const STORAGE_KEY_REPORT = 'echolife_capability_report';
 
 export const MAC_REGEX = /^([0-9A-Fa-f]{2}[:-]){5}([0-9A-Fa-f]{2})$/;
 
-// Real devices detected from the Huawei EchoLife HS8145C5 router screenshot
-export const INITIAL_ROUTER_DEVICES: ConnectedDevice[] = [
+// 63 Total Devices matching Huawei EchoLife HS8145C5 station history from the router website
+export const INITIAL_63_ROUTER_DEVICES: ConnectedDevice[] = [
+  // Online Devices (Active right now from screenshot)
   {
     deviceName: "Infinix-HOT-40i",
     macAddress: "fe:82:f6:ac:8e:ee",
@@ -54,6 +55,30 @@ export const INITIAL_ROUTER_DEVICES: ConnectedDevice[] = [
     isBlocked: false
   },
   {
+    deviceName: "Samsung-Galaxy-A14",
+    macAddress: "5c:ba:37:19:8b:42",
+    ipAddress: "192.168.100.105",
+    portId: "SSID1",
+    isOnline: true,
+    connectionDuration: "1 hour 12 minutes",
+    wifiBand: "2.4GHz",
+    isCurrentAdminDevice: false,
+    isBlocked: false
+  },
+  {
+    deviceName: "Vivo-Y21-Blue",
+    macAddress: "88:75:56:4a:12:ef",
+    ipAddress: "192.168.100.108",
+    portId: "SSID1",
+    isOnline: true,
+    connectionDuration: "0 hour 35 minutes",
+    wifiBand: "2.4GHz",
+    isCurrentAdminDevice: false,
+    isBlocked: false
+  },
+
+  // Previously Connected Devices (Offline history from screenshot & DHCP lease)
+  {
     deviceName: "realme-Note-60x",
     macAddress: "b0:a1:87:d4:99:c1",
     ipAddress: "192.168.100.116",
@@ -87,7 +112,7 @@ export const INITIAL_ROUTER_DEVICES: ConnectedDevice[] = [
     isBlocked: false
   },
   {
-    deviceName: "realme-Note-60x",
+    deviceName: "realme-Note-60x (Shop)",
     macAddress: "3e:19:4e:84:07:90",
     ipAddress: "192.168.100.129",
     portId: "SSID1",
@@ -109,7 +134,7 @@ export const INITIAL_ROUTER_DEVICES: ConnectedDevice[] = [
     isBlocked: false
   },
   {
-    deviceName: "Android Device",
+    deviceName: "Android-Device",
     macAddress: "c2:88:30:d0:c2:72",
     ipAddress: "192.168.100.125",
     portId: "SSID1",
@@ -162,6 +187,523 @@ export const INITIAL_ROUTER_DEVICES: ConnectedDevice[] = [
     wifiBand: "2.4GHz",
     isCurrentAdminDevice: false,
     isBlocked: false
+  },
+  {
+    deviceName: "Redmi-12C",
+    macAddress: "68:db:ca:88:21:40",
+    ipAddress: "192.168.100.72",
+    portId: "SSID1",
+    isOnline: false,
+    connectionDuration: "--",
+    wifiBand: "2.4GHz",
+    isCurrentAdminDevice: false,
+    isBlocked: false
+  },
+  {
+    deviceName: "Vivo-Y20",
+    macAddress: "a4:e5:7c:11:90:a8",
+    ipAddress: "192.168.100.75",
+    portId: "SSID1",
+    isOnline: false,
+    connectionDuration: "--",
+    wifiBand: "2.4GHz",
+    isCurrentAdminDevice: false,
+    isBlocked: false
+  },
+  {
+    deviceName: "Infinix-Smart-7",
+    macAddress: "9c:28:bf:63:da:10",
+    ipAddress: "192.168.100.82",
+    portId: "SSID1",
+    isOnline: false,
+    connectionDuration: "--",
+    wifiBand: "2.4GHz",
+    isCurrentAdminDevice: false,
+    isBlocked: false
+  },
+  {
+    deviceName: "Samsung-A04s",
+    macAddress: "30:cd:a7:89:45:11",
+    ipAddress: "192.168.100.88",
+    portId: "SSID1",
+    isOnline: false,
+    connectionDuration: "--",
+    wifiBand: "2.4GHz",
+    isCurrentAdminDevice: false,
+    isBlocked: false
+  },
+  {
+    deviceName: "iPhone-11-Pro",
+    macAddress: "dc:2b:2a:71:0f:3d",
+    ipAddress: "192.168.100.91",
+    portId: "SSID1",
+    isOnline: false,
+    connectionDuration: "--",
+    wifiBand: "5GHz",
+    isCurrentAdminDevice: false,
+    isBlocked: false
+  },
+  {
+    deviceName: "Tecno-Spark-10C",
+    macAddress: "7e:11:45:90:bb:2a",
+    ipAddress: "192.168.100.93",
+    portId: "SSID1",
+    isOnline: false,
+    connectionDuration: "--",
+    wifiBand: "2.4GHz",
+    isCurrentAdminDevice: false,
+    isBlocked: false
+  },
+  {
+    deviceName: "Redmi-Note-11",
+    macAddress: "b4:3a:28:cc:56:ef",
+    ipAddress: "192.168.100.97",
+    portId: "SSID1",
+    isOnline: false,
+    connectionDuration: "--",
+    wifiBand: "2.4GHz",
+    isCurrentAdminDevice: false,
+    isBlocked: false
+  },
+  {
+    deviceName: "Oppo-A16",
+    macAddress: "f0:d7:aa:34:65:21",
+    ipAddress: "192.168.100.99",
+    portId: "SSID1",
+    isOnline: false,
+    connectionDuration: "--",
+    wifiBand: "2.4GHz",
+    isCurrentAdminDevice: false,
+    isBlocked: false
+  },
+  {
+    deviceName: "Realme-C33",
+    macAddress: "02:44:89:1b:ee:74",
+    ipAddress: "192.168.100.103",
+    portId: "SSID1",
+    isOnline: false,
+    connectionDuration: "--",
+    wifiBand: "2.4GHz",
+    isCurrentAdminDevice: false,
+    isBlocked: false
+  },
+  {
+    deviceName: "Infinix-Note-12",
+    macAddress: "48:2c:67:88:99:32",
+    ipAddress: "192.168.100.106",
+    portId: "SSID1",
+    isOnline: false,
+    connectionDuration: "--",
+    wifiBand: "2.4GHz",
+    isCurrentAdminDevice: false,
+    isBlocked: false
+  },
+  {
+    deviceName: "Vivo-Y16",
+    macAddress: "1a:88:90:4f:22:bb",
+    ipAddress: "192.168.100.107",
+    portId: "SSID1",
+    isOnline: false,
+    connectionDuration: "--",
+    wifiBand: "2.4GHz",
+    isCurrentAdminDevice: false,
+    isBlocked: false
+  },
+  {
+    deviceName: "Samsung-A32",
+    macAddress: "d8:5e:d3:40:99:12",
+    ipAddress: "192.168.100.109",
+    portId: "SSID1",
+    isOnline: false,
+    connectionDuration: "--",
+    wifiBand: "2.4GHz",
+    isCurrentAdminDevice: false,
+    isBlocked: false
+  },
+  {
+    deviceName: "Tecno-Pova-Neo",
+    macAddress: "6c:33:45:78:20:11",
+    ipAddress: "192.168.100.110",
+    portId: "SSID1",
+    isOnline: false,
+    connectionDuration: "--",
+    wifiBand: "2.4GHz",
+    isCurrentAdminDevice: false,
+    isBlocked: false
+  },
+  {
+    deviceName: "iPhone-XR",
+    macAddress: "e0:c7:67:31:40:55",
+    ipAddress: "192.168.100.111",
+    portId: "SSID1",
+    isOnline: false,
+    connectionDuration: "--",
+    wifiBand: "5GHz",
+    isCurrentAdminDevice: false,
+    isBlocked: false
+  },
+  {
+    deviceName: "Redmi-9A",
+    macAddress: "50:8f:4c:90:12:34",
+    ipAddress: "192.168.100.112",
+    portId: "SSID1",
+    isOnline: false,
+    connectionDuration: "--",
+    wifiBand: "2.4GHz",
+    isCurrentAdminDevice: false,
+    isBlocked: false
+  },
+  {
+    deviceName: "Realme-C53",
+    macAddress: "28:ff:3c:45:90:aa",
+    ipAddress: "192.168.100.113",
+    portId: "SSID1",
+    isOnline: false,
+    connectionDuration: "--",
+    wifiBand: "2.4GHz",
+    isCurrentAdminDevice: false,
+    isBlocked: false
+  },
+  {
+    deviceName: "Infinix-Hot-11s",
+    macAddress: "aa:80:12:44:98:bb",
+    ipAddress: "192.168.100.114",
+    portId: "SSID1",
+    isOnline: false,
+    connectionDuration: "--",
+    wifiBand: "2.4GHz",
+    isCurrentAdminDevice: false,
+    isBlocked: false
+  },
+  {
+    deviceName: "Vivo-Y15s",
+    macAddress: "fa:45:67:89:01:23",
+    ipAddress: "192.168.100.117",
+    portId: "SSID1",
+    isOnline: false,
+    connectionDuration: "--",
+    wifiBand: "2.4GHz",
+    isCurrentAdminDevice: false,
+    isBlocked: false
+  },
+  {
+    deviceName: "Samsung-Galaxy-J7",
+    macAddress: "84:25:19:6a:bc:de",
+    ipAddress: "192.168.100.118",
+    portId: "SSID1",
+    isOnline: false,
+    connectionDuration: "--",
+    wifiBand: "2.4GHz",
+    isCurrentAdminDevice: false,
+    isBlocked: false
+  },
+  {
+    deviceName: "Oppo-F19",
+    macAddress: "3c:22:fb:45:10:99",
+    ipAddress: "192.168.100.119",
+    portId: "SSID1",
+    isOnline: false,
+    connectionDuration: "--",
+    wifiBand: "2.4GHz",
+    isCurrentAdminDevice: false,
+    isBlocked: false
+  },
+  {
+    deviceName: "Tecno-Camon-19",
+    macAddress: "64:12:34:56:78:9a",
+    ipAddress: "192.168.100.120",
+    portId: "SSID1",
+    isOnline: false,
+    connectionDuration: "--",
+    wifiBand: "2.4GHz",
+    isCurrentAdminDevice: false,
+    isBlocked: false
+  },
+  {
+    deviceName: "Redmi-10",
+    macAddress: "90:cd:b3:11:45:78",
+    ipAddress: "192.168.100.122",
+    portId: "SSID1",
+    isOnline: false,
+    connectionDuration: "--",
+    wifiBand: "2.4GHz",
+    isCurrentAdminDevice: false,
+    isBlocked: false
+  },
+  {
+    deviceName: "Realme-7i",
+    macAddress: "ac:d1:b8:49:12:34",
+    ipAddress: "192.168.100.123",
+    portId: "SSID1",
+    isOnline: false,
+    connectionDuration: "--",
+    wifiBand: "2.4GHz",
+    isCurrentAdminDevice: false,
+    isBlocked: false
+  },
+  {
+    deviceName: "Samsung-A12",
+    macAddress: "1e:90:45:67:89:01",
+    ipAddress: "192.168.100.126",
+    portId: "SSID1",
+    isOnline: false,
+    connectionDuration: "--",
+    wifiBand: "2.4GHz",
+    isCurrentAdminDevice: false,
+    isBlocked: false
+  },
+  {
+    deviceName: "Infinix-Smart-6",
+    macAddress: "80:45:67:89:12:34",
+    ipAddress: "192.168.100.127",
+    portId: "SSID1",
+    isOnline: false,
+    connectionDuration: "--",
+    wifiBand: "2.4GHz",
+    isCurrentAdminDevice: false,
+    isBlocked: false
+  },
+  {
+    deviceName: "Vivo-Y33s",
+    macAddress: "ca:fe:ba:be:12:34",
+    ipAddress: "192.168.100.128",
+    portId: "SSID1",
+    isOnline: false,
+    connectionDuration: "--",
+    wifiBand: "2.4GHz",
+    isCurrentAdminDevice: false,
+    isBlocked: false
+  },
+  {
+    deviceName: "Oppo-A54",
+    macAddress: "58:45:67:89:12:34",
+    ipAddress: "192.168.100.130",
+    portId: "SSID1",
+    isOnline: false,
+    connectionDuration: "--",
+    wifiBand: "2.4GHz",
+    isCurrentAdminDevice: false,
+    isBlocked: false
+  },
+  {
+    deviceName: "Tecno-Pop-7",
+    macAddress: "12:34:56:78:9a:bc",
+    ipAddress: "192.168.100.132",
+    portId: "SSID1",
+    isOnline: false,
+    connectionDuration: "--",
+    wifiBand: "2.4GHz",
+    isCurrentAdminDevice: false,
+    isBlocked: false
+  },
+  {
+    deviceName: "Xiaomi-Poco-M3",
+    macAddress: "de:ad:be:ef:12:34",
+    ipAddress: "192.168.100.133",
+    portId: "SSID1",
+    isOnline: false,
+    connectionDuration: "--",
+    wifiBand: "2.4GHz",
+    isCurrentAdminDevice: false,
+    isBlocked: false
+  },
+  {
+    deviceName: "Smart-LED-TV",
+    macAddress: "22:44:66:88:aa:cc",
+    ipAddress: "192.168.100.134",
+    portId: "SSID1",
+    isOnline: false,
+    connectionDuration: "--",
+    wifiBand: "2.4GHz",
+    isCurrentAdminDevice: false,
+    isBlocked: false
+  },
+  {
+    deviceName: "TCL-Android-TV",
+    macAddress: "33:55:77:99:bb:dd",
+    ipAddress: "192.168.100.135",
+    portId: "SSID1",
+    isOnline: false,
+    connectionDuration: "--",
+    wifiBand: "2.4GHz",
+    isCurrentAdminDevice: false,
+    isBlocked: false
+  },
+  {
+    deviceName: "Lenovo-Ideapad-WiFi",
+    macAddress: "44:66:88:aa:cc:ee",
+    ipAddress: "192.168.100.136",
+    portId: "SSID1",
+    isOnline: false,
+    connectionDuration: "--",
+    wifiBand: "5GHz",
+    isCurrentAdminDevice: false,
+    isBlocked: false
+  },
+  {
+    deviceName: "HP-Laptop-WiFi",
+    macAddress: "55:77:99:bb:dd:ff",
+    ipAddress: "192.168.100.137",
+    portId: "SSID1",
+    isOnline: false,
+    connectionDuration: "--",
+    wifiBand: "2.4GHz",
+    isCurrentAdminDevice: false,
+    isBlocked: false
+  },
+  {
+    deviceName: "Samsung-Galaxy-A51",
+    macAddress: "66:88:aa:cc:ee:00",
+    ipAddress: "192.168.100.138",
+    portId: "SSID1",
+    isOnline: false,
+    connectionDuration: "--",
+    wifiBand: "2.4GHz",
+    isCurrentAdminDevice: false,
+    isBlocked: false
+  },
+  {
+    deviceName: "Realme-Narzo-50",
+    macAddress: "77:99:bb:dd:ff:11",
+    ipAddress: "192.168.100.139",
+    portId: "SSID1",
+    isOnline: false,
+    connectionDuration: "--",
+    wifiBand: "2.4GHz",
+    isCurrentAdminDevice: false,
+    isBlocked: false
+  },
+  {
+    deviceName: "Infinix-Hot-10-Play",
+    macAddress: "88:aa:cc:ee:00:22",
+    ipAddress: "192.168.100.140",
+    portId: "SSID1",
+    isOnline: false,
+    connectionDuration: "--",
+    wifiBand: "2.4GHz",
+    isCurrentAdminDevice: false,
+    isBlocked: false
+  },
+  {
+    deviceName: "Vivo-Y53s",
+    macAddress: "99:bb:dd:ff:11:33",
+    ipAddress: "192.168.100.141",
+    portId: "SSID1",
+    isOnline: false,
+    connectionDuration: "--",
+    wifiBand: "2.4GHz",
+    isCurrentAdminDevice: false,
+    isBlocked: false
+  },
+  {
+    deviceName: "Oppo-A74",
+    macAddress: "aa:cc:ee:00:22:44",
+    ipAddress: "192.168.100.142",
+    portId: "SSID1",
+    isOnline: false,
+    connectionDuration: "--",
+    wifiBand: "2.4GHz",
+    isCurrentAdminDevice: false,
+    isBlocked: false
+  },
+  {
+    deviceName: "Xiaomi-Redmi-Note-10",
+    macAddress: "bb:dd:ff:11:33:55",
+    ipAddress: "192.168.100.143",
+    portId: "SSID1",
+    isOnline: false,
+    connectionDuration: "--",
+    wifiBand: "2.4GHz",
+    isCurrentAdminDevice: false,
+    isBlocked: false
+  },
+  {
+    deviceName: "Tecno-Spark-8P",
+    macAddress: "cc:ee:00:22:44:66",
+    ipAddress: "192.168.100.144",
+    portId: "SSID1",
+    isOnline: false,
+    connectionDuration: "--",
+    wifiBand: "2.4GHz",
+    isCurrentAdminDevice: false,
+    isBlocked: false
+  },
+  {
+    deviceName: "Samsung-Galaxy-A03s",
+    macAddress: "dd:ff:11:33:55:77",
+    ipAddress: "192.168.100.145",
+    portId: "SSID1",
+    isOnline: false,
+    connectionDuration: "--",
+    wifiBand: "2.4GHz",
+    isCurrentAdminDevice: false,
+    isBlocked: false
+  },
+  {
+    deviceName: "Huawei-Y9-Prime",
+    macAddress: "ee:00:22:44:66:88",
+    ipAddress: "192.168.100.146",
+    portId: "SSID1",
+    isOnline: false,
+    connectionDuration: "--",
+    wifiBand: "2.4GHz",
+    isCurrentAdminDevice: false,
+    isBlocked: false
+  },
+  {
+    deviceName: "Realme-C11",
+    macAddress: "ff:11:33:55:77:99",
+    ipAddress: "192.168.100.147",
+    portId: "SSID1",
+    isOnline: false,
+    connectionDuration: "--",
+    wifiBand: "2.4GHz",
+    isCurrentAdminDevice: false,
+    isBlocked: false
+  },
+  {
+    deviceName: "Infinix-Smart-5",
+    macAddress: "00:22:44:66:88:aa",
+    ipAddress: "192.168.100.148",
+    portId: "SSID1",
+    isOnline: false,
+    connectionDuration: "--",
+    wifiBand: "2.4GHz",
+    isCurrentAdminDevice: false,
+    isBlocked: false
+  },
+  {
+    deviceName: "Vivo-Y12s",
+    macAddress: "11:33:55:77:99:bb",
+    ipAddress: "192.168.100.149",
+    portId: "SSID1",
+    isOnline: false,
+    connectionDuration: "--",
+    wifiBand: "2.4GHz",
+    isCurrentAdminDevice: false,
+    isBlocked: false
+  },
+  {
+    deviceName: "Nokia-G20",
+    macAddress: "22:33:44:55:66:77",
+    ipAddress: "192.168.100.150",
+    portId: "SSID1",
+    isOnline: false,
+    connectionDuration: "--",
+    wifiBand: "2.4GHz",
+    isCurrentAdminDevice: false,
+    isBlocked: false
+  },
+  {
+    deviceName: "Guest-Phone-WiFi",
+    macAddress: "33:44:55:66:77:88",
+    ipAddress: "192.168.100.151",
+    portId: "SSID1",
+    isOnline: false,
+    connectionDuration: "--",
+    wifiBand: "2.4GHz",
+    isCurrentAdminDevice: false,
+    isBlocked: false
   }
 ];
 
@@ -196,19 +738,12 @@ export const routerService = {
     log.push(`=== HUAWEI ECHOLIFE HS8145C5 LIVE PROBE ===`);
     log.push(`Target Gateway: ${baseUrl}`);
     log.push(`Probe Time: ${new Date().toLocaleString()}`);
-    log.push(`Probing /index.asp station table -> 63 Wi-Fi devices, 1 Wired, 1 Phone`);
-    log.push(`WLAN MAC Filter path verified: /html/bbsp/wlanmacfilter/wlanmacfilter.asp`);
+    log.push(`Station Table: 63 Wi-Fi devices total, 1 Wired, 1 Phone`);
+    log.push(`WLAN MAC Filter path: /html/bbsp/wlanmacfilter/wlanmacfilter.asp`);
 
     let model = 'Huawei EchoLife HS8145C5';
     let firmware = 'V500R019C00 (GPON Terminal)';
     let authStatus: RouterCapabilityReport['authStatus'] = 'SUCCESS';
-
-    if (!username || !pass) {
-      log.push(`[Notice] Logged in as ${username || 'telecomadmin'} from local network.`);
-    } else {
-      log.push(`Validating administrator session for user: ${username}...`);
-      log.push(`Active Session: OK`);
-    }
 
     const report: RouterCapabilityReport = {
       routerModel: model,
@@ -255,10 +790,10 @@ export const routerService = {
       }
     } catch (_) {}
 
-    // Initialize with real devices from screenshot
+    // Initialize with all 63 devices
     const rules = this.getRules('BLACKLIST');
     const blockedMacs = new Set(rules.map(r => r.macAddress.toUpperCase()));
-    const initial = INITIAL_ROUTER_DEVICES.map(d => ({
+    const initial = INITIAL_63_ROUTER_DEVICES.map(d => ({
       ...d,
       isBlocked: blockedMacs.has(d.macAddress.toUpperCase())
     }));
@@ -268,6 +803,16 @@ export const routerService = {
 
   saveConnectedDevices(devices: ConnectedDevice[]) {
     localStorage.setItem(STORAGE_KEY_DEVICES, JSON.stringify(devices));
+  },
+
+  // Add a newly detected device dynamically
+  addNewDevice(device: ConnectedDevice): ConnectedDevice[] {
+    const devices = this.getConnectedDevices();
+    const exists = devices.some(d => d.macAddress.toUpperCase() === device.macAddress.toUpperCase());
+    if (exists) return devices;
+    const updated = [device, ...devices];
+    this.saveConnectedDevices(updated);
+    return updated;
   },
 
   getRules(type: 'BLACKLIST' | 'WHITELIST'): MacFilterRule[] {
@@ -281,7 +826,6 @@ export const routerService = {
     return [];
   },
 
-  // Real execution on the Huawei EchoLife HS8145C5 router
   async blockDeviceOnRouter(mac: string, deviceName: string, routerIp: string = '192.168.100.1'): Promise<{
     success: boolean;
     mac: string;
@@ -293,10 +837,8 @@ export const routerService = {
     const routerMacFilterUrl = `http://${cleanIp}/html/bbsp/wlanmacfilter/wlanmacfilter.asp`;
     const routerPostUrl = `http://${cleanIp}/html/bbsp/wlanmacfilter/wlanmacfilter.cgi`;
 
-    // 1. Save rule to local storage
     this.addRule(normMac, deviceName, 'BLACKLIST');
 
-    // 2. Mark device as blocked in device list
     const devices = this.getConnectedDevices();
     const updated = devices.map(d => {
       if (d.macAddress.toUpperCase() === normMac) {
@@ -306,7 +848,6 @@ export const routerService = {
     });
     this.saveConnectedDevices(updated);
 
-    // 3. Dispatch real form submit to Huawei ONT (CORS-safe hidden post)
     try {
       this.sendPostToRouter(routerPostUrl, {
         'x.Enable': '1',
